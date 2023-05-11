@@ -16,4 +16,4 @@ I can't tell if I'm going to maintain this yet but it'll always serve as a good 
 
 2. Save the akamai script as `script.js` next to `index.js` in it's minified format (one liner format), don't pretty print.
 
-3. Run `node index.js` as enjoy your deobfuscated script in `out.js`
+3. Run `node index.js` and enjoy your deobfuscated script in `out.js`
