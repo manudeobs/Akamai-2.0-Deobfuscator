@@ -83,9 +83,10 @@ try{
     vm.runInContext(`(function(){${generate(entry).code}})()`, ctx)
 } catch(e) {}
 
-
 replaceConstantIntsFromCtx(AST, ctx)
 const decoder_arr_id = findDecoderArrayId(AST)
+
+
 replaceMemberExpressionsFromCtx(AST, ctx, decoder_arr_id)
 AST = removeDeadCode(AST)
 
@@ -102,14 +103,22 @@ removeStringConcealing(AST, ctx, decoder_object, decoder_arr_id)
 evalNonStringConcealingFunctions(AST, ctx, decoder_object)
 
 removeWindowProxy(AST, window_proxy)
-
 traverse(AST, bracketToDot)
+
 AST = replaceConstants(AST)
 
 patchSensorDataNull(AST, decoder_object)
 AST = removeDeadCode(AST)
 
 traverse(AST, concatToUnaryExpression)
+
+const {body: main_body} = AST.program.body[0].expression.callee.body
+
+for (let i = 0; i < main_body.length; i++) {
+    if (main_body[i].type !== 'ReturnStatement') continue
+    const return_call = main_body.splice(i, 1)[0]
+    main_body.push(return_call)
+}
 
 fs.writeFileSync('out.js', generate(AST).code)
 

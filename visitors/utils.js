@@ -12,7 +12,8 @@ function removeDeadCode(AST) {
         traverse(AST, {
             "VariableDeclarator|FunctionDeclaration"(path) {
                 const {node, scope} = path
-                if (!scope.getBinding(node.id.name).referenced) { 
+                const {referenced, constantViolations} = scope.getBinding(node.id.name)
+                if (!referenced && constantViolations.length === 0) { 
                     removed++
                     path.remove()
                 }
